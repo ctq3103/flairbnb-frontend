@@ -40,7 +40,7 @@ const USER_QUERY = gql`
             listing {
               id
               title
-              image
+              images
               address
               admin
               country
@@ -59,7 +59,7 @@ const USER_QUERY = gql`
           result {
             id
             title
-            image
+            images
             address
             admin
             country
@@ -103,12 +103,22 @@ export const Profile = () => {
     await refetch();
   };
 
+  const user = data?.userProfile.user;
+  const isMyProfile = meData?.me.id === Number(id);
+
+  const userBookings = user ? user.bookings : null;
+  const userListings = user ? user.listings : null;
+
   const stripeError = new URL(window.location.href).searchParams.get(
     "stripe_error",
   );
 
-  const stripeErrorBanner = stripeError && (
+  const stripeErrorBanner = isMyProfile && stripeError && (
     <ErrorBanner message="We had an issue connecting with Stripe. Please try again soon!" />
+  );
+
+  const emailVerifiedBanner = isMyProfile && !meData?.me.emailVerified && (
+    <ErrorBanner message="Please check your email to verify your account" />
   );
 
   if (loading) {
@@ -123,12 +133,6 @@ export const Profile = () => {
       </>
     );
   }
-
-  const user = data?.userProfile.user;
-  const isMyProfile = meData?.me.id === Number(id);
-
-  const userBookings = user ? user.bookings : null;
-  const userListings = user ? user.listings : null;
 
   const userProfileElement = user ? (
     <UserProfile
@@ -161,6 +165,7 @@ export const Profile = () => {
       <Helmet>
         <title>Profile | Flairbnb</title>
       </Helmet>
+      {emailVerifiedBanner}
       {stripeErrorBanner}
       {userProfileElement}
       {userBookingsElement}

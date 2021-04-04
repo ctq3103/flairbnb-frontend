@@ -1,13 +1,17 @@
 @tailwind base;
 @tailwind components;
 
+label {
+  @apply block text-lg font-medium text-gray-600 mb-2;
+}
+
 input,
 textarea {
-  @apply focus:outline-none focus:border-gray-900 p-4 border  text-lg border-gray-400 transition-colors text-left rounded-md mb-2;
+  @apply focus:outline-none focus:border-gray-900 p-4 border  text-base border-gray-400 transition-colors text-left rounded-md;
 }
 
 textarea {
-  resize: none;
+  //resize: none;
   height: 100px;
 }
 
@@ -32,6 +36,10 @@ textarea {
 
 .btn-secondary {
   @apply rounded-lg focus:outline-none text-white py-3 px-2 transition-colors bg-indigo-500 hover:bg-indigo-700;
+}
+
+.btn-disabled {
+  @apply rounded-lg focus:outline-none text-white py-3 px-2 bg-gray-400;
 }
 
 .btn-outline {

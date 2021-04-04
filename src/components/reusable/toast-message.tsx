@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
 
 export const displaySuccessMessage = (message: string) => {
-  return toast.success(`🥳 ${message}`, {
-    position: "top-center",
-    autoClose: 5000,
+  return toast(`🥳  SUCCESS! ${message}`, {
+    position: "top-left",
+    autoClose: 10000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -13,9 +13,9 @@ export const displaySuccessMessage = (message: string) => {
 };
 
 export const displayErrorMessage = (message: string) => {
-  return toast.error(`🤔 ${message}`, {
-    position: "top-center",
-    autoClose: 5000,
+  return toast.error(`😣  ${message}`, {
+    position: "top-left",
+    autoClose: 10000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,

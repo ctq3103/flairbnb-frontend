@@ -10,6 +10,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/styles.css";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 ReactDOM.render(
   <React.StrictMode>

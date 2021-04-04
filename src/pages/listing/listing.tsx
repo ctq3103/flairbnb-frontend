@@ -27,7 +27,7 @@ const LISTING = gql`
       listing {
         title
         description
-        image
+        images
         type
         address
         country
@@ -111,7 +111,7 @@ export const Listing = () => {
   const isMyProfile = meData?.me.id === listing?.host.id;
 
   const listingImagesElement = listing ? (
-    <ListingImages image={listing.image} />
+    <ListingImages images={listing.images} />
   ) : null;
 
   const listingDetailsElement = listing ? (

@@ -11,7 +11,7 @@ export interface User_userProfile_user_bookings_result_listing {
   __typename: "Listing";
   id: number;
   title: string;
-  image: string;
+  images: string[];
   address: string;
   admin: string;
   country: string;
@@ -40,7 +40,7 @@ export interface User_userProfile_user_listings_result {
   __typename: "Listing";
   id: number;
   title: string;
-  image: string;
+  images: string[];
   address: string;
   admin: string;
   country: string;

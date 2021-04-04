@@ -77,7 +77,7 @@ export const CreateAccountForm = () => {
       </h4>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 mt-5 w-full mb-5"
+        className="grid grid-cols-1 mt-5 w-full mb-5 space-y-4"
       >
         <input
           ref={register({ required: "Name is required" })}

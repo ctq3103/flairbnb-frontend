@@ -52,8 +52,6 @@ export const UserProfile = ({
     },
   );
 
-  console.log("disconnec error", error);
-
   const redirectToStripe = () => {
     window.location.href = stripeAuthUrl;
   };
@@ -67,58 +65,64 @@ export const UserProfile = ({
     />
   );
 
-  const walletDetails =
-    isMyProfile && user?.hasWallet ? (
-      <div className="first:ml-0 w-full space-y-3">
-        <span className="text-xs font-semibold inline-block py-1 px-2  rounded-full text-indigo-600 bg-indigo-200 uppercase last:mr-0 mr-1">
-          Stripe Connected
+  const walletDetails = user?.hasWallet ? (
+    <div className="first:ml-0 w-full space-y-3">
+      <span className="text-xs font-semibold inline-block py-1 px-2  rounded-full text-indigo-600 bg-indigo-200 uppercase last:mr-0 mr-1">
+        Stripe Connected
+      </span>
+      <p>
+        Income Earned:{" "}
+        <span className="font-medium">
+          {user.income ? formatPrice(user.income) : "$0"}
         </span>
-        <p>
-          Income Earned:{" "}
-          <span className="font-medium">
-            {user.income ? formatPrice(user.income) : "$0"}
-          </span>
+      </p>
+      <button
+        className="btn-outline"
+        type="button"
+        onClick={() => disconnectStripe()}
+      >
+        {loading ? "Loading..." : "Disconnect Stripe"}
+      </button>
+      <p className="text-xs text-gray-400">
+        By disconnecting, you won't be able to receive{" "}
+        <span className="font-medium">any further payments</span>. This will
+        prevent users from booking listings that you might have already created.
+      </p>
+    </div>
+  ) : (
+    <div className="w-full space-y-3">
+      <p className="">
+        Interested in becoming a Flairbnb host? <br />
+        Register with your Stripe account!
+      </p>
+      <button
+        className={`text-sm my-3 ${
+          user.emailVerified ? "btn-secondary" : "btn-disabled"
+        }`}
+        disabled={!user.emailVerified}
+        onClick={redirectToStripe}
+      >
+        Connect With Stripe
+      </button>
+      {!user.emailVerified && (
+        <p className="text-xs text-rose-400">
+          Please verify your account before connecting with Stripe
         </p>
-        <button
-          className="btn-outline"
-          type="button"
-          onClick={() => disconnectStripe()}
+      )}
+      <p className="text-xs text-gray-400">
+        Flairbnb uses{" "}
+        <a
+          href="https://stripe.com/en-US/connect"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-700"
         >
-          {loading ? "Loading..." : "Disconnect Stripe"}
-        </button>
-        <p className="text-xs text-gray-400">
-          By disconnecting, you won't be able to receive{" "}
-          <span className="font-medium">any further payments</span>. This will
-          prevent users from booking listings that you might have already
-          created.
-        </p>
-      </div>
-    ) : (
-      <div className="w-full space-y-3">
-        <p className="">
-          Interested in becoming a Flairbnb host? <br />
-          Register with your Stripe account!
-        </p>
-        <button
-          className="text-sm btn-secondary my-3"
-          onClick={redirectToStripe}
-        >
-          Connect With Stripe
-        </button>
-        <p className="text-xs text-gray-400">
-          Flairbnb uses{" "}
-          <a
-            href="https://stripe.com/en-US/connect"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-indigo-700"
-          >
-            Stripe Connect
-          </a>{" "}
-          to help transfer your earnings in a secure and trusted manner.
-        </p>
-      </div>
-    );
+          Stripe Connect
+        </a>{" "}
+        to help transfer your earnings in a secure and trusted manner.
+      </p>
+    </div>
+  );
 
   return (
     <div className="container lg:w-1/3 md:w-1/2 mx-auto my-10 flex flex-col items-center border p-6 border-gray-400 relative">
@@ -155,8 +159,12 @@ export const UserProfile = ({
           </p>
         )}
       </div>
-      <Divider className="w-8/12 my-4" />
-      {walletDetails}
+      {isMyProfile && (
+        <>
+          <Divider className="w-8/12 my-4" />
+          {walletDetails}
+        </>
+      )}
     </div>
   );
 };

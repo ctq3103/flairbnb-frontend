@@ -12,11 +12,6 @@ export const Header = () => {
 
   return (
     <>
-      {isLoggedIn && data && !data.me.emailVerified && (
-        <nav className="bg-blue-500 p-3 text-center text-base text-white fixed inset-0 z-10 ">
-          <span>Please check your email to verify your account</span>
-        </nav>
-      )}
       <header className="container max-w-full flex items-center justify-between px-6 h-20 border-b border-gray-400 bg-white fixed inset-0 z-10">
         <div className="flex items-center w-1/2">
           <Link to="/" className="mr-6">

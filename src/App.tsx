@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { useReactiveVar } from "@apollo/client";
 import { isLoggedInVar } from "./apollo";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import { Header } from "./components/header/header";
 import { Listings } from "./pages/listings/listings";
 import { NotFound } from "./pages/404";
@@ -13,18 +15,24 @@ import { Profile } from "./pages/user/profile";
 import { CreateAccount } from "./pages/user/create-account";
 import { Login } from "./pages/user/login";
 import { Stripe } from "./pages/stripe/stripe";
+import { HostListing } from "./pages/host/host";
 
 const commonRoutes = [
   { path: "/confirm", component: <ConfirmEmail /> },
   { path: "/edit-profile", component: <EditProfile /> },
   { path: "/profile/:id", component: <Profile /> },
   { path: "/stripe", component: <Stripe /> },
+  { path: "/host", component: <HostListing /> },
 ];
 
 const logoutRoutes = [
   { path: "/create-account", component: <CreateAccount /> },
   { path: "/login", component: <Login /> },
 ];
+
+const stripePromise = loadStripe(
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY as string,
+);
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -37,7 +45,9 @@ function App() {
           <Home />
         </Route>
         <Route exact path="/listings">
-          <Listings />
+          <Elements stripe={stripePromise}>
+            <Listings />
+          </Elements>
         </Route>
         <Route exact path="/listing/:id">
           <Listing />

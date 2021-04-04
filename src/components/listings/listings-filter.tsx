@@ -40,12 +40,11 @@ export const ListingsFilterOptions = ({ filter, setFilter }: Props) => {
         }}
         className="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
       >
-        <option value={ListingsFilter.PRICE_LOW_TO_HIGH}>
-          Price: Low To High
-        </option>
-        <option value={ListingsFilter.PRICE_HIGH_TO_LOW}>
-          Price: High To Low
-        </option>
+        {Object.keys(ListingsFilter).map((type, index) => (
+          <option value={type} key={index}>
+            {type.replace(/_/g, " ")}
+          </option>
+        ))}
       </select>
     </div>
   );

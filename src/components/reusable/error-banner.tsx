@@ -8,11 +8,11 @@ export const ErrorBanner = ({
   message = "Uh oh! Something went wrong :( Please check you connection and/or try again",
 }: Props) => {
   return (
-    <div className="bg-indigo-600">
+    <div className="bg-indigo-600 rounded ">
       <div className="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between flex-wrap">
           <div className="w-0 flex-1 flex items-center">
-            <span className="flex p-2 rounded-lg bg-indigo-800">
+            <span className="flex p-2 rounded-lg bg-indigo-600">
               <svg
                 className="h-6 w-6 text-white"
                 xmlns="http://www.w3.org/2000/svg"

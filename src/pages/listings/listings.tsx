@@ -36,7 +36,7 @@ export const LISTINGS = gql`
       result {
         id
         title
-        image
+        images
         address
         admin
         country

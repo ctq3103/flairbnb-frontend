@@ -4,6 +4,7 @@ interface IButtonProps {
   canClick: boolean;
   loading: boolean;
   actionText: string;
+  styling?: string;
   onClick?: () => void;
 }
 
@@ -11,10 +12,11 @@ export const Button: React.FC<IButtonProps> = ({
   canClick,
   loading,
   actionText,
+  styling,
   onClick,
 }) => (
   <button
-    className={`text-lg font-medium focus:outline-none text-white py-4  transition-colors rounded-md ${
+    className={`text-lg font-medium focus:outline-none text-white py-4 transition-colors rounded-md ${styling} ${
       canClick
         ? "bg-rose-600 hover:bg-rose-700"
         : "bg-gray-300 pointer-events-none"

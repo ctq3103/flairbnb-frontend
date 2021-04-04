@@ -14,7 +14,7 @@ export const ListingDetails = ({ listing, isMyProfile }: Props) => {
   const {
     title,
     description,
-    image,
+    images,
     type,
     address,
     country,
@@ -63,7 +63,6 @@ export const ListingDetails = ({ listing, isMyProfile }: Props) => {
           >
             {host.name}
           </div>
-          {host.emailVerified && <VerifiedCheck />}
         </Link>
         {!isMyProfile && <button className="btn-outline">Contact host</button>}
       </div>

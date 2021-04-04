@@ -31,6 +31,16 @@ export interface EditProfileInput {
   password?: string | null;
 }
 
+export interface HostListingInput {
+  title: string;
+  description: string;
+  images: string[];
+  type?: ListingType | null;
+  address: string;
+  price: number;
+  numOfGuests?: number | null;
+}
+
 export interface LoginViaEmailInput {
   email: string;
   password: string;

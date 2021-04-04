@@ -46,7 +46,7 @@ export interface Listing_listing_listing {
   __typename: "Listing";
   title: string;
   description: string;
-  image: string;
+  images: string[];
   type: ListingType;
   address: string;
   country: string;
