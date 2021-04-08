@@ -1,8 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { CreateAccountForm } from "../../components/user/create-account-form";
-import { SocialLogin } from "../../components/user/social-login";
+import { CreateAccountForm } from "./components/create-account-form";
+import { SocialLogin } from "./components/social-login";
 
 export const CreateAccount = () => {
   return (

@@ -1,8 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { EmailLogin } from "../../components/user/email-login";
-import { SocialLogin } from "../../components/user/social-login";
+import { EmailLogin } from "./components/email-login";
+import { SocialLogin } from "./components/social-login";
 
 export const Login = () => {
   return (

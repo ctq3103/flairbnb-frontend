@@ -10,11 +10,13 @@
 export interface Me_me {
   __typename: "User";
   id: number;
+  createdAt: any;
   name: string;
   email: string;
-  hasWallet: boolean;
-  role: string;
+  avatar: string | null;
   emailVerified: boolean;
+  hasWallet: boolean;
+  income: number;
 }
 
 export interface Me {

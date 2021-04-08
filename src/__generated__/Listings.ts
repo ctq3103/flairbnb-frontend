@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ListingsFilter } from "./globalTypes";
+import { ListingsFilter, ListingType } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: Listings
@@ -13,10 +13,13 @@ export interface Listings_listings_result {
   __typename: "Listing";
   id: number;
   title: string;
+  description: string;
   images: string[];
+  type: ListingType;
   address: string;
-  admin: string;
   country: string;
+  admin: string;
+  city: string;
   price: number;
   numOfGuests: number;
 }
@@ -40,4 +43,5 @@ export interface ListingsVariables {
   filter: ListingsFilter;
   limit: number;
   page: number;
+  type?: ListingType | null;
 }

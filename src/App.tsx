@@ -4,18 +4,18 @@ import { useReactiveVar } from "@apollo/client";
 import { isLoggedInVar } from "./apollo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { Header } from "./components/header/header";
-import { Listings } from "./pages/listings/listings";
+import { Header } from "./lib/components/header";
+import { Listings } from "./pages/listings";
 import { NotFound } from "./pages/404";
-import { Home } from "./pages/home/home";
-import { Listing } from "./pages/listing/listing";
-import { EditProfile } from "./components/user/edit-profile";
+import { Home } from "./pages/home";
+import { Listing } from "./pages/listing";
+import { EditProfile } from "./pages/user/components/edit-profile";
 import { ConfirmEmail } from "./pages/user/confirm-email";
 import { Profile } from "./pages/user/profile";
 import { CreateAccount } from "./pages/user/create-account";
 import { Login } from "./pages/user/login";
-import { Stripe } from "./pages/stripe/stripe";
-import { HostListing } from "./pages/host/host";
+import { Stripe } from "./pages/stripe";
+import { HostListing } from "./pages/host";
 
 const commonRoutes = [
   { path: "/confirm", component: <ConfirmEmail /> },
@@ -44,13 +44,13 @@ function App() {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route exact path="/listings">
-          <Elements stripe={stripePromise}>
-            <Listings />
-          </Elements>
+        <Route exact path="/listings/:location?">
+          <Listings />
         </Route>
         <Route exact path="/listing/:id">
-          <Listing />
+          <Elements stripe={stripePromise}>
+            <Listing />
+          </Elements>
         </Route>
         {isLoggedIn
           ? commonRoutes.map((route) => (

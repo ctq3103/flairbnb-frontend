@@ -25,6 +25,13 @@ export interface CreateAccountInput {
   password: string;
 }
 
+export interface CreateBookingInput {
+  checkIn: string;
+  checkOut: string;
+  listingId: number;
+  source: string;
+}
+
 export interface EditProfileInput {
   name?: string | null;
   email?: string | null;

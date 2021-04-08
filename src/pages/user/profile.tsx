@@ -2,14 +2,15 @@ import { gql, useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router";
-import { ErrorBanner } from "../../components/reusable/error-banner";
-import { PageSkeleton } from "../../components/reusable/page-skeleton";
-import { UserBookings } from "../../components/user/user-bookings";
-import { UserListings } from "../../components/user/user-listings";
-import { UserProfile } from "../../components/user/user-profile";
+import { ErrorBanner } from "../../lib/components/error-banner";
+import { PageSkeleton } from "../../lib/components/page-skeleton";
+import { UserBookings } from "./components/user-bookings";
+import { UserListings } from "./components/user-listings";
+import { UserProfile } from "./components/user-profile";
 import { useMe } from "../../hooks/useMe";
 import { useScrollToTop } from "../../hooks/useScrollToTop";
 import { User as UserData, UserVariables } from "../../__generated__/User";
+import { LISTING_FRAGMENT, USER_FRAGMENT } from "../../fragments";
 
 const USER_QUERY = gql`
   query User(
@@ -22,14 +23,7 @@ const USER_QUERY = gql`
       ok
       error
       user {
-        id
-        createdAt
-        name
-        email
-        avatar
-        emailVerified
-        hasWallet
-        income
+        ...UserParts
         bookings(input: { limit: $limit, page: $bookingsPage }) {
           ok
           error
@@ -38,14 +32,7 @@ const USER_QUERY = gql`
           result {
             id
             listing {
-              id
-              title
-              images
-              address
-              admin
-              country
-              price
-              numOfGuests
+              ...ListingParts
             }
             checkIn
             checkOut
@@ -57,19 +44,14 @@ const USER_QUERY = gql`
           totalPages
           totalResults
           result {
-            id
-            title
-            images
-            address
-            admin
-            country
-            price
-            numOfGuests
+            ...ListingParts
           }
         }
       }
     }
   }
+  ${LISTING_FRAGMENT}
+  ${USER_FRAGMENT}
 `;
 
 interface MatchParams {
@@ -163,12 +145,12 @@ export const Profile = () => {
   return (
     <>
       <Helmet>
-        <title>Profile | Flairbnb</title>
+        <title>{user?.name}'s Profile | Flairbnb</title>
       </Helmet>
-      {emailVerifiedBanner}
-      {stripeErrorBanner}
+      {isMyProfile && emailVerifiedBanner}
+      {isMyProfile && stripeErrorBanner}
       {userProfileElement}
-      {userBookingsElement}
+      {isMyProfile && userBookingsElement}
       {userListingsElement}
     </>
   );

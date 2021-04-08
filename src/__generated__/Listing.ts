@@ -12,8 +12,13 @@ import { ListingType } from "./globalTypes";
 export interface Listing_listing_listing_bookings_result_tenant {
   __typename: "User";
   id: number;
+  createdAt: any;
   name: string;
+  email: string;
   avatar: string | null;
+  emailVerified: boolean;
+  hasWallet: boolean;
+  income: number;
 }
 
 export interface Listing_listing_listing_bookings_result {
@@ -35,15 +40,18 @@ export interface Listing_listing_listing_bookings {
 export interface Listing_listing_listing_host {
   __typename: "User";
   id: number;
+  createdAt: any;
   name: string;
   email: string;
   avatar: string | null;
   emailVerified: boolean;
   hasWallet: boolean;
+  income: number;
 }
 
 export interface Listing_listing_listing {
   __typename: "Listing";
+  id: number;
   title: string;
   description: string;
   images: string[];

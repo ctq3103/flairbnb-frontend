@@ -7,6 +7,8 @@ module.exports = {
     extend: {
       colors: {
         rose: colors.rose,
+        orange: colors.orange,
+        emerald: colors.emerald,
       },
       spacing: {
         "25vh": "25vh",

@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { ListingType } from "./globalTypes";
+
 // ====================================================
 // GraphQL query operation: User
 // ====================================================
@@ -11,10 +13,13 @@ export interface User_userProfile_user_bookings_result_listing {
   __typename: "Listing";
   id: number;
   title: string;
+  description: string;
   images: string[];
+  type: ListingType;
   address: string;
-  admin: string;
   country: string;
+  admin: string;
+  city: string;
   price: number;
   numOfGuests: number;
 }
@@ -40,10 +45,13 @@ export interface User_userProfile_user_listings_result {
   __typename: "Listing";
   id: number;
   title: string;
+  description: string;
   images: string[];
+  type: ListingType;
   address: string;
-  admin: string;
   country: string;
+  admin: string;
+  city: string;
   price: number;
   numOfGuests: number;
 }

@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 
+button {
+  @apply focus:outline-none;
+}
+
 label {
   @apply block text-lg font-medium text-gray-600 mb-2;
 }
