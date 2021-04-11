@@ -4,7 +4,7 @@ import { KeyboardDatePicker } from "@material-ui/pickers";
 import moment, { Moment } from "moment";
 import { Divider } from "@material-ui/core";
 import { Listing as ListingData } from "../../../__generated__/Listing";
-import { Button, ButtonSecondary } from "../../../lib/components/button";
+import { Button } from "../../../lib/components/button";
 import { formatPrice } from "../../../lib/utils/formatPrice";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { displayErrorMessage } from "../../../lib/components/toast-message";
@@ -149,7 +149,6 @@ export const ListingCreateBooking = ({
   }
 
   return (
-    //w-full lg:w-1/3
     <div className="lg:col-span-1 text-center border border-gray-200 rounded px-4 py-10 space-y-10 shadow hover:shadow-lg">
       <div className="font-medium text-xl text-gray-400">
         <span className="text-rose-500 text-3xl">{formatPrice(price)}</span>

@@ -23,7 +23,13 @@ export const Button: React.FC<IButtonProps> = ({
     }`}
     onClick={onClick}
   >
-    {loading ? "Loading..." : actionText}
+    {loading ? (
+      <span className="w-full text-white my-0 mx-auto block relative text-center">
+        <i className="fas fa-circle-notch fa-spin fa-lg"></i>
+      </span>
+    ) : (
+      actionText
+    )}
   </button>
 );
 

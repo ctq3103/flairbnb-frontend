@@ -1,9 +1,4 @@
-//-listing-images
-//-listing-details
-//listing-bookings
-//listing-createbooking
-//listing-createBookingModal
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router";
@@ -21,38 +16,7 @@ import {
 } from "../../__generated__/Listing";
 import { ListingCreateBookingModal } from "./components/listing-create-booking-modal";
 import { ListingBookings } from "./components/listing-bookings";
-import { LISTING_FRAGMENT, USER_FRAGMENT } from "../../fragments";
-
-const LISTING = gql`
-  query Listing($id: Int!, $limit: Int!, $page: Int!) {
-    listing(input: { listingId: $id }) {
-      ok
-      error
-      listing {
-        ...ListingParts
-        bookingsIndex
-        bookings(input: { limit: $limit, page: $page }) {
-          ok
-          error
-          totalPages
-          totalResults
-          result {
-            tenant {
-              ...UserParts
-            }
-            checkIn
-            checkOut
-          }
-        }
-        host {
-          ...UserParts
-        }
-      }
-    }
-  }
-  ${LISTING_FRAGMENT}
-  ${USER_FRAGMENT}
-`;
+import { LISTING } from "../../lib/graphql";
 
 interface MatchParams {
   id: string;
@@ -78,7 +42,7 @@ export const Listing = () => {
     variables: {
       id: Number(id),
       limit: PAGE_LIMIT,
-      page: bookingsPage + 0,
+      page: bookingsPage + 1,
     },
   });
 
@@ -144,7 +108,7 @@ export const Listing = () => {
 
   const listingCreateBookingModal = listing && checkInDate && checkOutDate && (
     <ListingCreateBookingModal
-      listingId={listing.id}
+      listing={listing}
       price={listing.price}
       checkInDate={checkInDate}
       checkOutDate={checkOutDate}

@@ -45,8 +45,6 @@ export const Header = () => {
   return (
     <nav className=" bg-white w-full flex justify-between items-center mx-auto container max-w-full px-6 h-20 shadow-sm fixed inset-0 z-10">
       <div className="flex h-full items-center">
-        {/* <i className="fab fa-airbnb fa-3x"></i>
-          flairbnb */}
         <Link to="/" className="">
           <span
             className="text-rose-500 text-xl md:text-4xl font-medium"
@@ -136,6 +134,7 @@ export const Header = () => {
                       localStorage.setItem(LOCALSTORAGE_TOKEN, "");
                       authTokenVar(null);
                       isLoggedInVar(false);
+                      history.push("/");
                     }}
                   >
                     <div className="flex items-center relative cursor-pointer whitespace-nowrap space-x-2">

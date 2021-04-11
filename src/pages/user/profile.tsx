@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router";
@@ -10,49 +10,7 @@ import { UserProfile } from "./components/user-profile";
 import { useMe } from "../../hooks/useMe";
 import { useScrollToTop } from "../../hooks/useScrollToTop";
 import { User as UserData, UserVariables } from "../../__generated__/User";
-import { LISTING_FRAGMENT, USER_FRAGMENT } from "../../fragments";
-
-const USER_QUERY = gql`
-  query User(
-    $userId: Int!
-    $bookingsPage: Int!
-    $listingsPage: Int!
-    $limit: Int!
-  ) {
-    userProfile(input: { userId: $userId }) {
-      ok
-      error
-      user {
-        ...UserParts
-        bookings(input: { limit: $limit, page: $bookingsPage }) {
-          ok
-          error
-          totalPages
-          totalResults
-          result {
-            id
-            listing {
-              ...ListingParts
-            }
-            checkIn
-            checkOut
-          }
-        }
-        listings(input: { limit: $limit, page: $listingsPage }) {
-          ok
-          error
-          totalPages
-          totalResults
-          result {
-            ...ListingParts
-          }
-        }
-      }
-    }
-  }
-  ${LISTING_FRAGMENT}
-  ${USER_FRAGMENT}
-`;
+import { USER_QUERY } from "../../lib/graphql";
 
 interface MatchParams {
   id: string;
@@ -69,7 +27,7 @@ export const Profile = () => {
 
   useScrollToTop();
 
-  const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+  const { data, loading, error } = useQuery<UserData, UserVariables>(
     USER_QUERY,
     {
       variables: {
@@ -80,10 +38,6 @@ export const Profile = () => {
       },
     },
   );
-
-  const handleUserRefetch = async () => {
-    await refetch();
-  };
 
   const user = data?.userProfile.user;
   const isMyProfile = meData?.me.id === Number(id);
@@ -117,11 +71,7 @@ export const Profile = () => {
   }
 
   const userProfileElement = user ? (
-    <UserProfile
-      user={user}
-      isMyProfile={isMyProfile}
-      handleUserRefetch={handleUserRefetch}
-    />
+    <UserProfile user={user} isMyProfile={isMyProfile} />
   ) : null;
 
   const userListingsElement = userListings ? (

@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import React from "react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../../lib/utils/formatPrice";
@@ -11,28 +11,16 @@ import {
 } from "../../../lib/components/toast-message";
 import { VerifiedCheck } from "../../../lib/components/verified-check";
 import { Divider } from "@material-ui/core";
-
-const DISCONNECT_STRIPE = gql`
-  mutation DisconnectStripe {
-    disconnectStripe {
-      ok
-      error
-    }
-  }
-`;
+import { DISCONNECT_STRIPE } from "../../../lib/graphql";
 
 interface Props {
   user: User["userProfile"]["user"];
   isMyProfile: boolean;
-  handleUserRefetch: () => Promise<void>;
 }
 
-export const UserProfile = ({
-  user,
-  isMyProfile,
-  handleUserRefetch,
-}: Props) => {
-  //const letterAvatar = user.email.charAt(0).toUpperCase();
+export const UserProfile = ({ user, isMyProfile }: Props) => {
+  const client = useApolloClient();
+
   const stripeAuthUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_STRIPE_CLIENT_ID}&scope=read_write`;
 
   const [disconnectStripe, { loading }] = useMutation<DisconnectStripe>(
@@ -42,7 +30,18 @@ export const UserProfile = ({
         displaySuccessMessage(
           "You've successfully disconnected from Stripe! You'll have to reconnect with Stripe to continue to create listings.",
         );
-        handleUserRefetch();
+
+        client.writeFragment({
+          id: `User:${user.id}`,
+          fragment: gql`
+            fragment VerifiedUser on User {
+              hasWallet
+            }
+          `,
+          data: {
+            hasWallet: false,
+          },
+        });
       },
       onError: () => {
         displayErrorMessage(

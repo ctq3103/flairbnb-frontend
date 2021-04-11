@@ -13,15 +13,7 @@ import {
   displaySuccessMessage,
 } from "../../../lib/components/toast-message";
 import { Helmet } from "react-helmet-async";
-
-const EDIT_PROFILE_MUTATION = gql`
-  mutation EditProfile($input: EditProfileInput!) {
-    editProfile(input: $input) {
-      ok
-      error
-    }
-  }
-`;
+import { EDIT_PROFILE_MUTATION } from "../../../lib/graphql";
 
 interface IFormProps {
   name?: string;
@@ -132,7 +124,6 @@ export const EditProfile = () => {
               pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             })}
             name="email"
-            //className="input"
             type="email"
             placeholder="Email"
           />

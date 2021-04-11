@@ -5,18 +5,6 @@ import { useMe } from "../hooks/useMe";
 import { ConfirmEmail } from "../pages/user/confirm-email";
 import { Profile } from "../pages/user/profile";
 
-// const ClientRouter = [
-//     <Route exact key={1} path="/confirm">
-//       <ConfirmEmail />
-//     </Route>
-//     <Route exact key={2} path="/profile/:id">
-//       <Profile />
-//     </Route>
-//     <Route exact key={3} path="/edit-profile">
-//       <EditProfile />
-//     </Route>
-//   ]
-
 export const LoggedInRouter = () => {
   const { data, loading, error } = useMe();
 

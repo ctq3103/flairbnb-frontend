@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router";
 import { ErrorBanner } from "../../lib/components/error-banner";
@@ -15,37 +15,7 @@ import {
   Listings as ListingsData,
   ListingsVariables,
 } from "../../__generated__/Listings";
-import { LISTING_FRAGMENT } from "../../fragments";
-
-export const LISTINGS = gql`
-  query Listings(
-    $location: String
-    $filter: ListingsFilter!
-    $limit: Int!
-    $page: Int!
-    $type: ListingType
-  ) {
-    listings(
-      input: {
-        location: $location
-        filter: $filter
-        limit: $limit
-        page: $page
-        type: $type
-      }
-    ) {
-      ok
-      error
-      region
-      totalPages
-      totalResults
-      result {
-        ...ListingParts
-      }
-    }
-  }
-  ${LISTING_FRAGMENT}
-`;
+import { LISTINGS } from "../../lib/graphql";
 
 interface MatchParams {
   location: string;
@@ -59,7 +29,6 @@ const PAGE_LIMIT = 6;
 export const Listings = () => {
   const { location } = useParams<MatchParams>();
   const { state } = useLocation<MatchLocation>();
-  console.log(state);
   const locationRef = useRef(location);
   const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
   const [page, setPage] = useState(0);

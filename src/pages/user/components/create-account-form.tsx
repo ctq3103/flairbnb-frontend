@@ -1,4 +1,4 @@
-import { ApolloError, gql, useMutation } from "@apollo/client";
+import { ApolloError, useMutation } from "@apollo/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -12,15 +12,7 @@ import {
   displayErrorMessage,
   displaySuccessMessage,
 } from "../../../lib/components/toast-message";
-
-export const CREATE_ACCOUNT_MUTATION = gql`
-  mutation CreateAccount($input: CreateAccountInput!) {
-    createAccount(input: $input) {
-      ok
-      error
-    }
-  }
-`;
+import { CREATE_ACCOUNT_MUTATION } from "../../../lib/graphql";
 
 interface ICreateAccountForm {
   name: string;
@@ -107,7 +99,7 @@ export const CreateAccountForm = () => {
           <FormError errorMessage={"Please enter a valid email"} />
         )}
         <input
-          ref={register({ required: "Password is required" })}
+          ref={register({ required: "Password is required", minLength: 8 })}
           required
           name="password"
           type="password"
@@ -117,6 +109,9 @@ export const CreateAccountForm = () => {
         />
         {errors.password?.message && (
           <FormError errorMessage={errors.password?.message} />
+        )}
+        {errors.password?.type === "minLength" && (
+          <FormError errorMessage="Password must be at least 8 characters" />
         )}
         <input
           ref={register({

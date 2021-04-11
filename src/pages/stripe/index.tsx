@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import React, { useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router";
 import { Loading } from "../../lib/components/loading";
@@ -9,15 +9,7 @@ import {
   ConnectStripe as ConnectStripeData,
   ConnectStripeVariables,
 } from "../../__generated__/ConnectStripe";
-
-const CONNECT_STRIPE = gql`
-  mutation ConnectStripe($code: String!) {
-    connectStripe(input: { code: $code }) {
-      ok
-      error
-    }
-  }
-`;
+import { CONNECT_STRIPE } from "../../lib/graphql";
 
 export const Stripe = () => {
   const { data: userData } = useMe();
@@ -59,7 +51,7 @@ export const Stripe = () => {
   }
 
   if (loading) {
-    return <Loading message="Connecting your Stripe account..." />;
+    return <Loading />;
   }
 
   if (error) {

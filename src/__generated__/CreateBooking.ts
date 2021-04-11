@@ -11,6 +11,7 @@ import { CreateBookingInput } from "./globalTypes";
 
 export interface CreateBooking_createBooking {
   __typename: "CreateBookingOutput";
+  id: number | null;
   ok: boolean;
   error: string | null;
 }

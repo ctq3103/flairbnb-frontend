@@ -1,4 +1,4 @@
-import { ApolloError, gql, useMutation } from "@apollo/client";
+import { ApolloError, useApolloClient, useMutation } from "@apollo/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -14,17 +14,7 @@ import {
   LoginViaEmail as LoginViaEmailData,
   LoginViaEmailVariables,
 } from "../../../__generated__/LoginViaEmail";
-
-export const LOGIN_VIA_EMAIL = gql`
-  mutation LoginViaEmail($input: LoginViaEmailInput!) {
-    loginViaEmail(input: $input) {
-      ok
-      id
-      token
-      error
-    }
-  }
-`;
+import { ME_QUERY, LOGIN_VIA_EMAIL } from "../../../lib/graphql";
 
 interface ILoginForm {
   email: string;
@@ -33,6 +23,8 @@ interface ILoginForm {
 
 export const EmailLogin = () => {
   const history = useHistory();
+  const client = useApolloClient();
+
   const {
     register,
     getValues,
@@ -45,14 +37,28 @@ export const EmailLogin = () => {
 
   const onCompleted = (data: LoginViaEmailData) => {
     const {
-      loginViaEmail: { ok, id, token },
+      loginViaEmail: { ok, user, token },
     } = data;
-    if (ok && token && id) {
+    if (ok && token && user) {
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
       authTokenVar(token);
       isLoggedInVar(true);
       displaySuccessMessage("Login successfully!");
-      history.push(`/profile/${id}`);
+
+      const queryResult = client.readQuery({
+        query: ME_QUERY,
+      });
+      client.writeQuery({
+        query: ME_QUERY,
+        data: {
+          ...queryResult,
+          me: {
+            ...user,
+            __typename: "User",
+          },
+        },
+      });
+      history.push(`/profile/${user.id}`);
     }
   };
 
@@ -72,6 +78,7 @@ export const EmailLogin = () => {
   const onSubmit = () => {
     if (!loading) {
       const { email, password } = getValues();
+
       loginViaEmail({
         variables: {
           input: {
@@ -85,7 +92,6 @@ export const EmailLogin = () => {
 
   return (
     <div className="w-full max-w-screen-sm flex flex-col items-center">
-      {/* <img src={logo} className="w-52 mb-10" alt="Instacart" /> */}
       <h4 className="w-full font-medium text-center lg:text-3xl text-xl mb-5">
         Welcome back
       </h4>

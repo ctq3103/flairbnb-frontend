@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
@@ -17,17 +17,7 @@ import {
   HostListing as HostListingData,
   HostListingVariables,
 } from "../../__generated__/HostListing";
-import { Loading } from "../../lib/components/loading";
-
-const HOST_LISTING = gql`
-  mutation HostListing($input: HostListingInput!) {
-    hostListing(input: $input) {
-      id
-      ok
-      error
-    }
-  }
-`;
+import { HOST_LISTING, USER_QUERY } from "../../lib/graphql";
 
 interface HostListingForm {
   title: string;
@@ -60,6 +50,9 @@ function getBase64Value(file: File | Blob) {
 export const HostListing = () => {
   const { data: userData, loading: userLoading } = useMe();
 
+  const [files, setFiles] = useState<FileProps[]>([]);
+  const [images, setImages] = useState<string[] | unknown>();
+
   const {
     register,
     getValues,
@@ -75,24 +68,60 @@ export const HostListing = () => {
 
   useScrollToTop();
 
+  const getInputValues = () => {
+    const {
+      title,
+      description,
+      address,
+      country,
+      city,
+      state,
+      price,
+      numOfGuests,
+      listingType,
+    } = getValues();
+    const fullAddress = `${address}, ${city}, ${state}, ${country}`;
+
+    const input = {
+      title,
+      description,
+      address: fullAddress,
+      price: price * 100,
+      numOfGuests: numOfGuests * 1,
+      type: listingType,
+      images: images as string[],
+    };
+
+    return input;
+  };
+
   const [hostListing, { data: hostListingResult, loading }] = useMutation<
     HostListingData,
     HostListingVariables
   >(HOST_LISTING, {
-    onCompleted: () => {
+    refetchQueries: [
+      {
+        query: USER_QUERY,
+        variables: {
+          userId: Number(userData?.me.id),
+          bookingsPage: 1,
+          listingsPage: 1,
+          limit: 4,
+        },
+      },
+    ],
+    onCompleted: (data) => {
       displaySuccessMessage(
         "Congratulations! You've successfully created your listing!",
       );
     },
+
     onError: (e) => {
       displayErrorMessage(
         "Sorry! We weren't able to create your listing. Please try again! Make sure you enter valid address, city and country.",
       );
     },
   });
-
-  const [files, setFiles] = useState<FileProps[]>([]);
-  const [images, setImages] = useState<string[] | unknown>();
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
@@ -176,38 +205,13 @@ export const HostListing = () => {
     );
   }
 
-  if (loading || userLoading) {
-    return <Loading />;
-  }
-
   if (hostListingResult && hostListingResult.hostListing) {
     return <Redirect to={`/listing/${hostListingResult.hostListing.id}`} />;
   }
 
   const onSubmit = () => {
     if (!loading) {
-      const {
-        title,
-        description,
-        address,
-        country,
-        city,
-        state,
-        price,
-        numOfGuests,
-        listingType,
-      } = getValues();
-      const fullAddress = `${address}, ${city}, ${state}, ${country}`;
-
-      const input = {
-        title,
-        description,
-        address: fullAddress,
-        price: price * 100,
-        numOfGuests: numOfGuests * 1,
-        type: listingType,
-        images: images as string[],
-      };
+      const input = getInputValues();
 
       hostListing({
         variables: {
@@ -255,7 +259,7 @@ export const HostListing = () => {
         <div className="col-span-6 sm:col-span-3">
           <label htmlFor="numOfGuests">Max # Of Guests</label>
           <input
-            ref={register({ required: "Max # Of Guests is required", min: 0 })}
+            ref={register({ required: "Max # Of Guests is required", min: 1 })}
             required
             name="numOfGuests"
             type="number"
@@ -266,6 +270,9 @@ export const HostListing = () => {
           />
           {errors.numOfGuests?.message && (
             <FormError errorMessage={errors.numOfGuests?.message} />
+          )}
+          {errors.numOfGuests?.type === "min" && (
+            <FormError errorMessage="Number of Guest must be at least 1" />
           )}
         </div>
         <div className="col-span-6 sm:col-span-3">
@@ -284,21 +291,36 @@ export const HostListing = () => {
           {errors.price?.message && (
             <FormError errorMessage={errors.price?.message} />
           )}
+          {errors.price?.type === "min" && (
+            <FormError errorMessage="Price must be positive number" />
+          )}
         </div>
 
         <div className="col-span-6">
           <label htmlFor="title">Title</label>
           <input
-            ref={register({ required: "Title is required", min: 10, max: 50 })}
+            ref={register({
+              required: "Title is required",
+              minLength: 10,
+              maxLength: 50,
+            })}
             required
             name="title"
             type="text"
+            minLength={10}
+            maxLength={50}
             placeholder="Title"
             autoComplete="off"
             className="w-full"
           />
           {errors.title?.message && (
             <FormError errorMessage={errors.title?.message} />
+          )}
+          {errors.title?.type === "minLength" && (
+            <FormError errorMessage="Title must be at least 10 characters" />
+          )}
+          {errors.title?.type === "maxLength" && (
+            <FormError errorMessage="Title must not exceed 50 characters" />
           )}
         </div>
 
@@ -307,18 +329,26 @@ export const HostListing = () => {
           <textarea
             ref={register({
               required: "Description is required",
-              min: 10,
-              max: 500,
+              minLength: 10,
+              maxLength: 500,
             })}
             required
             name="description"
             placeholder="Description"
+            minLength={10}
+            maxLength={500}
             rows={800}
             autoComplete="off"
             className="w-full"
           />
           {errors.description?.message && (
             <FormError errorMessage={errors.description?.message} />
+          )}
+          {errors.description?.type === "minLength" && (
+            <FormError errorMessage="Description must be at least 10 characters" />
+          )}
+          {errors.description?.type === "maxLength" && (
+            <FormError errorMessage="Description must not exceed 500 characters" />
           )}
         </div>
 

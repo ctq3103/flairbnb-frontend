@@ -11,7 +11,7 @@ import {
   DialogActions,
   Tooltip,
 } from "@material-ui/core";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
   CreateBooking as CreateBookingData,
   CreateBookingVariables,
@@ -22,18 +22,12 @@ import {
 } from "../../../lib/components/toast-message";
 import { formatPrice } from "../../../lib/utils/formatPrice";
 import { Button } from "../../../lib/components/button";
-
-const CREATE_BOOKING = gql`
-  mutation CreateBooking($input: CreateBookingInput!) {
-    createBooking(input: $input) {
-      ok
-      error
-    }
-  }
-`;
+import { CREATE_BOOKING, USER_QUERY } from "../../../lib/graphql";
+import { useMe } from "../../../hooks/useMe";
+import { Listing } from "../../../__generated__/Listing";
 
 interface Props {
-  listingId: number;
+  listing: Listing["listing"]["listing"];
   price: number;
   checkInDate: Moment;
   checkOutDate: Moment;
@@ -44,7 +38,7 @@ interface Props {
 }
 
 export const ListingCreateBookingModal = ({
-  listingId,
+  listing,
   price,
   checkInDate,
   checkOutDate,
@@ -55,21 +49,33 @@ export const ListingCreateBookingModal = ({
 }: Props) => {
   const stripe = useStripe();
   const elements = useElements();
+  const { data: userData } = useMe();
 
   const [createBooking, { loading }] = useMutation<
     CreateBookingData,
     CreateBookingVariables
   >(CREATE_BOOKING, {
-    onCompleted: () => {
+    refetchQueries: [
+      {
+        query: USER_QUERY,
+        variables: {
+          userId: Number(userData?.me.id),
+          bookingsPage: 1,
+          listingsPage: 1,
+          limit: 4,
+        },
+      },
+    ],
+    onCompleted: (data) => {
       clearBookingData();
       displaySuccessMessage(
-        "Your've successfully booked the car! Enjoy your trip!",
+        "Your've successfully booked the room! Enjoy your trip!",
       );
       handleListingRefetch();
     },
     onError: () => {
       displayErrorMessage(
-        "Sorry! We weren't able to book the car. Please try again later!",
+        "Sorry! We weren't able to book the room. Please try again later!",
       );
     },
   });
@@ -95,7 +101,7 @@ export const ListingCreateBookingModal = ({
       createBooking({
         variables: {
           input: {
-            listingId,
+            listingId: listing.id,
             source: stripeToken.id,
             checkIn: moment(checkInDate).format("YYYY-MM-DD"),
             checkOut: moment(checkOutDate).format("YYYY-MM-DD"),

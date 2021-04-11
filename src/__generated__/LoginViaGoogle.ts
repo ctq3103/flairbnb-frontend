@@ -7,10 +7,22 @@
 // GraphQL mutation operation: LoginViaGoogle
 // ====================================================
 
+export interface LoginViaGoogle_loginViaGoogle_user {
+  __typename: "User";
+  id: number;
+  createdAt: any;
+  name: string;
+  email: string;
+  avatar: string | null;
+  emailVerified: boolean;
+  hasWallet: boolean;
+  income: number;
+}
+
 export interface LoginViaGoogle_loginViaGoogle {
   __typename: "LoginOutput";
   ok: boolean;
-  id: number | null;
+  user: LoginViaGoogle_loginViaGoogle_user;
   error: string | null;
   token: string | null;
 }

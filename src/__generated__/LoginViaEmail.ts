@@ -9,10 +9,22 @@ import { LoginViaEmailInput } from "./globalTypes";
 // GraphQL mutation operation: LoginViaEmail
 // ====================================================
 
+export interface LoginViaEmail_loginViaEmail_user {
+  __typename: "User";
+  id: number;
+  createdAt: any;
+  name: string;
+  email: string;
+  avatar: string | null;
+  emailVerified: boolean;
+  hasWallet: boolean;
+  income: number;
+}
+
 export interface LoginViaEmail_loginViaEmail {
   __typename: "LoginOutput";
   ok: boolean;
-  id: number | null;
+  user: LoginViaEmail_loginViaEmail_user;
   token: string | null;
   error: string | null;
 }

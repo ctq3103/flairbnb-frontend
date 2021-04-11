@@ -30,7 +30,6 @@ export const ListingDetails = ({ listing, isMyProfile }: Props) => {
   );
 
   return (
-    //w-full lg:w-1/2
     <div className="lg:col-span-2 space-y-6 lg:space-y-8">
       <div>
         <span className="text-gray-500 font-light">

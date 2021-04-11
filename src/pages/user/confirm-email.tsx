@@ -3,19 +3,12 @@ import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useHistory } from "react-router-dom";
 import { useMe } from "../../hooks/useMe";
+import { displaySuccessMessage } from "../../lib/components/toast-message";
+import { VERIFY_EMAIL_MUTATION } from "../../lib/graphql";
 import {
   VerifyEmail as VerifyEmailData,
   VerifyEmailVariables,
 } from "../../__generated__/VerifyEmail";
-
-const VERIFY_EMAIL_MUTATION = gql`
-  mutation VerifyEmail($input: VerifyEmailInput!) {
-    verifyEmail(input: $input) {
-      ok
-      error
-    }
-  }
-`;
 
 export const ConfirmEmail = () => {
   const { data: userData } = useMe();
@@ -38,6 +31,7 @@ export const ConfirmEmail = () => {
         },
       });
       history.push("/");
+      displaySuccessMessage("Your account is verified now!");
     }
   };
   const [verifyEmail] = useMutation<VerifyEmailData, VerifyEmailVariables>(

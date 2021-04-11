@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { useReactiveVar } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
 import { isLoggedInVar } from "./apollo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -16,6 +16,10 @@ import { CreateAccount } from "./pages/user/create-account";
 import { Login } from "./pages/user/login";
 import { Stripe } from "./pages/stripe";
 import { HostListing } from "./pages/host";
+import { USER_QUERY } from "./lib/graphql";
+import { User as UserData, UserVariables } from "./__generated__/User";
+import { useMe } from "./hooks/useMe";
+import { Loading } from "./lib/components/loading";
 
 const commonRoutes = [
   { path: "/confirm", component: <ConfirmEmail /> },
@@ -36,6 +40,24 @@ const stripePromise = loadStripe(
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
+
+  const { data: meData, loading } = useMe();
+
+  const { loading: userLoading } = useQuery<UserData, UserVariables>(
+    USER_QUERY,
+    {
+      variables: {
+        userId: Number(meData?.me.id),
+        bookingsPage: 1,
+        listingsPage: 1,
+        limit: 4,
+      },
+    },
+  );
+
+  if (loading || userLoading) {
+    return <Loading />;
+  }
 
   return (
     <Router>
