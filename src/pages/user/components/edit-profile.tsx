@@ -108,8 +108,14 @@ export const EditProfile = () => {
       const formData = new FormData();
       formData.append("file", files[0]);
       formData.append("folder", "flairbnb-avatars");
-      formData.append("api_key", "654471577876727");
-      formData.append("upload_preset", "f7xx3jab");
+      formData.append(
+        "api_key",
+        process.env.REACT_APP_CLOUDINARY_API_KEY as string,
+      );
+      formData.append(
+        "upload_preset",
+        process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET as string,
+      );
       formData.append("timestamp", String(Date.now() / 1000));
       const {
         data: { secure_url },

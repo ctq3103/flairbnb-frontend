@@ -15,23 +15,23 @@ export const isLoggedInVar = makeVar(Boolean(token));
 export const authTokenVar = makeVar(token);
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:5000/graphql`,
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "wss://flairbnb-backend.herokuapp.com/graphql"
+      : `ws://localhost:5000/graphql`,
   options: {
     reconnect: true,
     connectionParams: {
       authorization: authTokenVar() ? `Bearer ${authTokenVar()}` : "",
     },
   },
-  // process.env.NODE_ENV === "production"
-  //   ? "wss://nuber-eats-backend.herokuapp.com/graphql"
-  //   : `ws://localhost:5000/graphql`,
 });
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:5000/graphql",
-  // process.env.NODE_ENV === "production"
-  //   ? "https://nuber-eats-backend.herokuapp.com/graphql"
-  //   :
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "https://flairbnb-backend.herokuapp.com/graphql"
+      : `http://localhost:5000/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {
