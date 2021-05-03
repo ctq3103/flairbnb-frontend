@@ -10,7 +10,7 @@ import {
   displaySuccessMessage,
 } from "../../../lib/components/toast-message";
 import { VerifiedCheck } from "../../../lib/components/verified-check";
-import { Divider } from "@material-ui/core";
+import { Divider, Tooltip } from "@material-ui/core";
 import { DISCONNECT_STRIPE } from "../../../graphql";
 
 interface Props {
@@ -130,7 +130,9 @@ export const UserProfile = ({ user, isMyProfile }: Props) => {
           to="/edit-profile"
           className="absolute top-0 right-0 transition-colors hover:bg-gray-100 rounded-full"
         >
-          <i className="far fa-edit p-3 text-gray-700"></i>
+          <Tooltip title="Edit Profile">
+            <i className="far fa-edit p-3 text-gray-700"></i>
+          </Tooltip>
         </Link>
       )}
       {avatarSection}

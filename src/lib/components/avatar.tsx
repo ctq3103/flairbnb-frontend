@@ -15,7 +15,7 @@ export const ImageAvatar = ({ size, imageUrl }: ImageAvatarProps) => {
   const avatarSize =
     size === "extra-small"
       ? "h-10 w-10"
-      : "small"
+      : size === "small"
       ? "h-12 w-12"
       : size === "medium"
       ? "h-16 w-16"
@@ -35,7 +35,7 @@ export const LetterAvatar = ({ size, letter }: LetterAvatarProps) => {
   const avatarSize =
     size === "extra-small"
       ? "h-10 w-10"
-      : "small"
+      : size === "small"
       ? "h-12 w-12"
       : size === "medium"
       ? "h-16 w-16"
@@ -44,7 +44,7 @@ export const LetterAvatar = ({ size, letter }: LetterAvatarProps) => {
   const letterSize =
     size === "extra-small"
       ? "text-xl"
-      : "small"
+      : size === "small"
       ? "text-2xl"
       : size === "medium"
       ? "text-3xl"

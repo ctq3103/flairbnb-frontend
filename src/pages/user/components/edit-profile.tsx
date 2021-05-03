@@ -1,5 +1,5 @@
 import { ApolloError, gql, useApolloClient, useMutation } from "@apollo/client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../../../lib/components/button";
@@ -15,6 +15,8 @@ import {
 } from "../../../lib/components/toast-message";
 import { Helmet } from "react-helmet-async";
 import { EDIT_PROFILE_MUTATION } from "../../../graphql";
+import axios from "axios";
+import { Loading } from "../../../lib/components/loading";
 
 interface IFormProps {
   name?: string;
@@ -26,6 +28,9 @@ interface IFormProps {
 export const EditProfile = () => {
   const { data: userData } = useMe();
   const client = useApolloClient();
+
+  const [avatar, setAvatar] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const onCompleted = (data: EditProfileData) => {
     const {
@@ -85,8 +90,9 @@ export const EditProfile = () => {
     editProfile({
       variables: {
         input: {
-          name,
-          email,
+          ...(name !== userData?.me.name && { name }),
+          ...(email !== userData?.me.email && { email }),
+          ...(avatar !== "" && { avatar }),
           ...(password !== "" && { password }),
         },
       },
@@ -95,14 +101,49 @@ export const EditProfile = () => {
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
-    maxSize: 2000000,
-    maxFiles: 5,
+    maxSize: 1000000,
+    maxFiles: 1,
+    onDrop: async (files) => {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      formData.append("folder", "flairbnb-avatars");
+      formData.append("api_key", "654471577876727");
+      formData.append("upload_preset", "f7xx3jab");
+      formData.append("timestamp", String(Date.now() / 1000));
+      const {
+        data: { secure_url },
+      } = await axios.post(
+        "https://api.cloudinary.com/v1_1/quynhhchu/image/upload",
+        formData,
+      );
+      if (secure_url) {
+        setAvatar(secure_url);
+      }
+      setUploading(false);
+    },
+    onDropRejected: (fileRejections) => {
+      const error = fileRejections[0].errors[0].code;
+      if (error === "file-too-large") {
+        displayErrorMessage(
+          "You're only able to upload valid image file of under 1MB in size!",
+        );
+      }
+      if (error === "too-many-files") {
+        displayErrorMessage("You're only able to upload 01 image only!");
+      }
+      if (error === "file-invalid-type") {
+        displayErrorMessage(
+          "You're only able to upload valid JPG or PNG files!",
+        );
+      }
+    },
   });
 
   return (
     <>
       <Helmet>
-        <title>Create Account | Flairbnb</title>
+        <title>Edit Profile | Flairbnb</title>
       </Helmet>
       <div className="form-container">
         <h4 className="w-full font-medium text-center lg:text-3xl text-xl mb-5">
@@ -118,43 +159,33 @@ export const EditProfile = () => {
           className="grid max-w-screen-sm gap-3 mt-5 w-full mb-5"
         >
           <div>
-            <div
-              className="my-2 flex justify-center align-middle h-24 w-24 border-2 border-gray-500 border-dashed rounded-full hover:border-gray-300 group "
-              {...getRootProps()}
-            >
-              <i className="fas fa-plus mx-auto my-auto text-gray-500 group-hover:text-gray-300 3x"></i>
-              <input
-                name="images"
-                type="file"
-                className="sr-only"
-                {...getInputProps()}
-              />
+            <div className="flex justify-start items-center space-x-8">
+              <div
+                className="my-2 flex justify-center align-middle h-24 w-24 border-2 border-gray-500 border-dashed rounded-full hover:border-gray-300 group "
+                {...getRootProps()}
+              >
+                {uploading ? (
+                  <Loading />
+                ) : (
+                  <i className="fas fa-plus mx-auto my-auto text-gray-500 group-hover:text-gray-300 3x"></i>
+                )}
+                <input
+                  name="image"
+                  type="file"
+                  className="sr-only"
+                  {...getInputProps()}
+                />
+              </div>
+              {avatar && (
+                <img
+                  className="h-24 w-24 rounded-full"
+                  src={avatar}
+                  alt="user-avatar"
+                />
+              )}
             </div>
-            {/* <aside className="flex flex-wrap mt-4"></aside> */}
+            <small>*JPEG, PNG, JPG up to 1MB and 01 file only.</small>
           </div>
-
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Photo
-            </label>
-            <div className="mt-1 flex items-center">
-              <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-                <svg
-                  className="h-full w-full text-gray-300"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </span>
-              <input
-                type="file"
-                accept="image/*"
-                className="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              />
-              
-            </div>
-          </div> */}
 
           <input
             ref={register({ required: "Name is required" })}
