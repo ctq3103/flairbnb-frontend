@@ -2,14 +2,17 @@ import { useMutation } from "@apollo/client";
 import React, { useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router";
 import { Loading } from "../../lib/components/loading";
-import { displaySuccessMessage } from "../../lib/components/toast-message";
+import {
+  displayErrorMessage,
+  displaySuccessMessage,
+} from "../../lib/components/toast-message";
 import { useMe } from "../../hooks/useMe";
 import { useScrollToTop } from "../../hooks/useScrollToTop";
 import {
   ConnectStripe as ConnectStripeData,
   ConnectStripeVariables,
-} from "../../__generated__/ConnectStripe";
-import { CONNECT_STRIPE } from "../../lib/graphql";
+} from "../../graphql/__generated__/ConnectStripe";
+import { CONNECT_STRIPE } from "../../graphql";
 
 export const Stripe = () => {
   const { data: userData } = useMe();
@@ -20,11 +23,20 @@ export const Stripe = () => {
     ConnectStripeVariables
   >(CONNECT_STRIPE, {
     onCompleted: (data) => {
-      if (data && data.connectStripe) {
+      if (data && data.connectStripe.ok) {
         displaySuccessMessage(
           "You've successfully connected your Stripe Account! You can now begin to share your rooms!",
         );
+      } else if (data.connectStripe.error) {
+        displayErrorMessage(
+          "Something is wrong! Please check your information thoroughly and try again!",
+        );
       }
+    },
+    onError: (e) => {
+      displayErrorMessage(
+        "Something is wrong! Please connect to Stripe later!",
+      );
     },
   });
 

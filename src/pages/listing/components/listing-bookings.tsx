@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ImageAvatar, LetterAvatar } from "../../../lib/components/avatar";
 import { Pagination } from "../../../lib/components/pagination";
-import { Listing } from "../../../__generated__/Listing";
+import { Listing } from "../../../graphql/__generated__/Listing";
 
 interface Props {
   listingBookings: Listing["listing"]["listing"]["bookings"];

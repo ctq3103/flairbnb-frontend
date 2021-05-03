@@ -2,8 +2,8 @@ import { gql, useApolloClient, useMutation } from "@apollo/client";
 import React from "react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../../lib/utils/formatPrice";
-import { DisconnectStripe } from "../../../__generated__/DisconnectStripe";
-import { User } from "../../../__generated__/User";
+import { DisconnectStripe } from "../../../graphql/__generated__/DisconnectStripe";
+import { User } from "../../../graphql/__generated__/User";
 import { ImageAvatar, LetterAvatar } from "../../../lib/components/avatar";
 import {
   displayErrorMessage,
@@ -11,7 +11,7 @@ import {
 } from "../../../lib/components/toast-message";
 import { VerifiedCheck } from "../../../lib/components/verified-check";
 import { Divider } from "@material-ui/core";
-import { DISCONNECT_STRIPE } from "../../../lib/graphql";
+import { DISCONNECT_STRIPE } from "../../../graphql";
 
 interface Props {
   user: User["userProfile"]["user"];

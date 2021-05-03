@@ -8,31 +8,30 @@ import {
   IconButton,
   DialogTitle,
   DialogContent,
-  DialogActions,
   Tooltip,
 } from "@material-ui/core";
 import { useMutation } from "@apollo/client";
 import {
   CreateBooking as CreateBookingData,
   CreateBookingVariables,
-} from "../../../__generated__/CreateBooking";
+} from "../../../graphql/__generated__/CreateBooking";
 import {
   displayErrorMessage,
   displaySuccessMessage,
 } from "../../../lib/components/toast-message";
 import { formatPrice } from "../../../lib/utils/formatPrice";
 import { Button } from "../../../lib/components/button";
-import { CREATE_BOOKING, USER_QUERY } from "../../../lib/graphql";
+import { CREATE_BOOKING, USER_QUERY } from "../../../graphql";
 import { useMe } from "../../../hooks/useMe";
-import { Listing } from "../../../__generated__/Listing";
+import { Listing } from "../../../graphql/__generated__/Listing";
 
 interface Props {
   listing: Listing["listing"]["listing"];
   price: number;
   checkInDate: Moment;
   checkOutDate: Moment;
-  modalVisible: boolean;
-  setModalVisible: (modalVisible: boolean) => void;
+  createBookingModalVisible: boolean;
+  setCreateBookingModalVisible: (createBookingModalVisible: boolean) => void;
   clearBookingData: () => void;
   handleListingRefetch: () => Promise<void>;
 }
@@ -42,8 +41,8 @@ export const ListingCreateBookingModal = ({
   price,
   checkInDate,
   checkOutDate,
-  modalVisible,
-  setModalVisible,
+  createBookingModalVisible,
+  setCreateBookingModalVisible,
   clearBookingData,
   handleListingRefetch,
 }: Props) => {
@@ -55,6 +54,24 @@ export const ListingCreateBookingModal = ({
     CreateBookingData,
     CreateBookingVariables
   >(CREATE_BOOKING, {
+    onCompleted: (data) => {
+      if (data.createBooking.ok) {
+        clearBookingData();
+        displaySuccessMessage(
+          "Your've successfully booked the room! Enjoy your trip!",
+        );
+        handleListingRefetch();
+      } else if (data.createBooking.error) {
+        displayErrorMessage(
+          "Sorry! We weren't able to book the room. Please try again later!",
+        );
+      }
+    },
+    onError: () => {
+      displayErrorMessage(
+        "Sorry! We weren't able to book the room. Please try again later!",
+      );
+    },
     refetchQueries: [
       {
         query: USER_QUERY,
@@ -66,18 +83,6 @@ export const ListingCreateBookingModal = ({
         },
       },
     ],
-    onCompleted: (data) => {
-      clearBookingData();
-      displaySuccessMessage(
-        "Your've successfully booked the room! Enjoy your trip!",
-      );
-      handleListingRefetch();
-    },
-    onError: () => {
-      displayErrorMessage(
-        "Sorry! We weren't able to book the room. Please try again later!",
-      );
-    },
   });
 
   const daysBooked = checkOutDate.diff(checkInDate, "days") + 1;
@@ -119,18 +124,13 @@ export const ListingCreateBookingModal = ({
 
   return (
     <div>
-      <Dialog
-        open={modalVisible}
-        keepMounted
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle id="alert-dialog-slide-title">
+      <Dialog open={createBookingModalVisible} keepMounted>
+        <DialogTitle>
           <div className="flex justify-between items-center">
             Booking Confirmation
             <IconButton
               aria-label="close"
-              onClick={() => setModalVisible(false)}
+              onClick={() => setCreateBookingModalVisible(false)}
             >
               <i className="fas fa-times"></i>
             </IconButton>
@@ -176,15 +176,13 @@ export const ListingCreateBookingModal = ({
           <Button
             onClick={handleCreateBooking}
             canClick={true}
-            loading={loading}
-            actionText="Book Now"
+            actionText={loading ? "Booking..." : "Book Now"}
           />
           <p className="text-gray-500 text-sm px-6 pb-4 pt-2">
             Test using the credit card number: 4242 4242 4242 4242, a future
             expiry date, and any 3 digits for the CVC code.
           </p>
         </DialogContent>
-        <DialogActions></DialogActions>
       </Dialog>
     </div>
   );

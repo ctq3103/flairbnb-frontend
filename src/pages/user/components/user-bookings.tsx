@@ -1,6 +1,6 @@
 import React from "react";
 import { ListingCard } from "../../../lib/components/listing-card";
-import { User } from "../../../__generated__/User";
+import { User } from "../../../graphql/__generated__/User";
 import { Pagination } from "../../../lib/components/pagination";
 
 interface Props {

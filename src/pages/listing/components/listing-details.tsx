@@ -1,15 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Listing } from "../../../__generated__/Listing";
+import { Listing } from "../../../graphql/__generated__/Listing";
 import { ImageAvatar, LetterAvatar } from "../../../lib/components/avatar";
 import { Divider } from "@material-ui/core";
 
 interface Props {
   listing: Listing["listing"]["listing"];
   isMyProfile: boolean;
+  contactHostModalVisible: boolean;
+  setContactHostModalVisible: (contactHostModalVisible: boolean) => void;
 }
 
-export const ListingDetails = ({ listing, isMyProfile }: Props) => {
+export const ListingDetails = ({
+  listing,
+  isMyProfile,
+  contactHostModalVisible,
+  setContactHostModalVisible,
+}: Props) => {
   const {
     title,
     description,
@@ -42,7 +49,6 @@ export const ListingDetails = ({ listing, isMyProfile }: Props) => {
       </div>
 
       <Divider />
-      {/* flex-row md:flex md:justify-between md:items-center  */}
       <div className="grid grid-cols-1 md:grid-cols-4 text-center space-y-8 md:space-y-0 items-center">
         <Link
           to={`/profile/${host.id}`}
@@ -58,7 +64,14 @@ export const ListingDetails = ({ listing, isMyProfile }: Props) => {
             {host.name}
           </div>
         </Link>
-        {!isMyProfile && <button className="btn-outline">Contact host</button>}
+        {!isMyProfile && (
+          <button
+            onClick={() => setContactHostModalVisible(true)}
+            className="btn-outline"
+          >
+            Contact host
+          </button>
+        )}
       </div>
 
       <Divider />

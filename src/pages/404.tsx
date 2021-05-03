@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 
 export const NotFound = () => (
-  <div className="h-screen flex flex-col items-center justify-center">
+  <div className="h-75vh flex flex-col items-center justify-center">
     <Helmet>
       <title>Not Found | Flairbnb</title>
     </Helmet>

@@ -13,10 +13,11 @@ import { useScrollToTop } from "../../hooks/useScrollToTop";
 import {
   Listing as ListingData,
   ListingVariables,
-} from "../../__generated__/Listing";
+} from "../../graphql/__generated__/Listing";
 import { ListingCreateBookingModal } from "./components/listing-create-booking-modal";
 import { ListingBookings } from "./components/listing-bookings";
-import { LISTING } from "../../lib/graphql";
+import { LISTING } from "../../graphql";
+import { ListingContactHostModal } from "./components/listing-contact-host-modal";
 
 interface MatchParams {
   id: string;
@@ -31,7 +32,10 @@ export const Listing = () => {
   const [bookingsPage, setBookingsPage] = useState(0);
   const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [createBookingModalVisible, setCreateBookingModalVisible] = useState(
+    false,
+  );
+  const [contactHostModalVisible, setContactHostModalVisible] = useState(false);
 
   useScrollToTop();
 
@@ -47,7 +51,7 @@ export const Listing = () => {
   });
 
   const clearBookingData = () => {
-    setModalVisible(true);
+    setCreateBookingModalVisible(false);
     setCheckInDate(null);
     setCheckOutDate(null);
   };
@@ -78,7 +82,20 @@ export const Listing = () => {
   ) : null;
 
   const listingDetailsElement = listing ? (
-    <ListingDetails isMyProfile={isMyProfile} listing={listing} />
+    <ListingDetails
+      isMyProfile={isMyProfile}
+      listing={listing}
+      contactHostModalVisible={contactHostModalVisible}
+      setContactHostModalVisible={setContactHostModalVisible}
+    />
+  ) : null;
+
+  const listingContactHostModalElement = listing ? (
+    <ListingContactHostModal
+      hostId={listing.host.id}
+      contactHostModalVisible={contactHostModalVisible}
+      setContactHostModalVisible={setContactHostModalVisible}
+    />
   ) : null;
 
   const listingBookingsElement =
@@ -102,7 +119,7 @@ export const Listing = () => {
       checkOutDate={checkOutDate}
       setCheckOutDate={setCheckOutDate}
       bookingsIndex={listing.bookingsIndex}
-      setModalVisible={setModalVisible}
+      setCreateBookingModalVisible={setCreateBookingModalVisible}
     />
   ) : null;
 
@@ -112,8 +129,8 @@ export const Listing = () => {
       price={listing.price}
       checkInDate={checkInDate}
       checkOutDate={checkOutDate}
-      modalVisible={modalVisible}
-      setModalVisible={setModalVisible}
+      createBookingModalVisible={createBookingModalVisible}
+      setCreateBookingModalVisible={setCreateBookingModalVisible}
       clearBookingData={clearBookingData}
       handleListingRefetch={handleListingRefetch}
     />
@@ -133,6 +150,7 @@ export const Listing = () => {
         {listingBookingsElement}
       </div>
       {listingCreateBookingModal}
+      {listingContactHostModalElement}
     </>
   );
 };

@@ -4,11 +4,11 @@ import { Helmet } from "react-helmet-async";
 import { useHistory } from "react-router-dom";
 import { useMe } from "../../hooks/useMe";
 import { displaySuccessMessage } from "../../lib/components/toast-message";
-import { VERIFY_EMAIL_MUTATION } from "../../lib/graphql";
+import { VERIFY_EMAIL_MUTATION } from "../../graphql";
 import {
   VerifyEmail as VerifyEmailData,
   VerifyEmailVariables,
-} from "../../__generated__/VerifyEmail";
+} from "../../graphql/__generated__/VerifyEmail";
 
 export const ConfirmEmail = () => {
   const { data: userData } = useMe();

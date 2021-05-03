@@ -7,10 +7,17 @@ import { PageSkeleton } from "../../lib/components/page-skeleton";
 import { UserBookings } from "./components/user-bookings";
 import { UserListings } from "./components/user-listings";
 import { UserProfile } from "./components/user-profile";
-import { useMe } from "../../hooks/useMe";
 import { useScrollToTop } from "../../hooks/useScrollToTop";
-import { User as UserData, UserVariables } from "../../__generated__/User";
-import { USER_QUERY } from "../../lib/graphql";
+import {
+  User as UserData,
+  UserVariables,
+} from "../../graphql/__generated__/User";
+import { USER_QUERY } from "../../graphql";
+import { Me } from "../../graphql/__generated__/Me";
+
+interface Props {
+  me: Me | undefined;
+}
 
 interface MatchParams {
   id: string;
@@ -18,9 +25,8 @@ interface MatchParams {
 
 const PAGE_LIMIT = 4;
 
-export const Profile = () => {
+export const Profile = ({ me }: Props) => {
   const { id } = useParams<MatchParams>();
-  const { data: meData } = useMe();
 
   const [bookingsPage, setBookingsPage] = useState(0);
   const [listingsPage, setListingsPage] = useState(0);
@@ -40,7 +46,7 @@ export const Profile = () => {
   );
 
   const user = data?.userProfile.user;
-  const isMyProfile = meData?.me.id === Number(id);
+  const isMyProfile = me?.me.id === Number(id);
 
   const userBookings = user ? user.bookings : null;
   const userListings = user ? user.listings : null;
@@ -53,7 +59,7 @@ export const Profile = () => {
     <ErrorBanner message="We had an issue connecting with Stripe. Please try again soon!" />
   );
 
-  const emailVerifiedBanner = isMyProfile && !meData?.me.emailVerified && (
+  const emailVerifiedBanner = isMyProfile && !me?.me.emailVerified && (
     <ErrorBanner message="Please check your email to verify your account" />
   );
 

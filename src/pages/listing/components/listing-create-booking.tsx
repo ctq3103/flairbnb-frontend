@@ -3,7 +3,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import moment, { Moment } from "moment";
 import { Divider } from "@material-ui/core";
-import { Listing as ListingData } from "../../../__generated__/Listing";
+import { Listing as ListingData } from "../../../graphql/__generated__/Listing";
 import { Button } from "../../../lib/components/button";
 import { formatPrice } from "../../../lib/utils/formatPrice";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
@@ -19,7 +19,7 @@ interface Props {
   checkOutDate: Moment | null;
   setCheckInDate: (checkInDate: Moment | null) => void;
   setCheckOutDate: (checkOutDate: Moment | null) => void;
-  setModalVisible: (modalVisible: boolean) => void;
+  setCreateBookingModalVisible: (createBookingModalVisible: boolean) => void;
 }
 
 interface BookingsIndexMonth {
@@ -42,7 +42,7 @@ export const ListingCreateBooking = ({
   checkOutDate,
   setCheckInDate,
   setCheckOutDate,
-  setModalVisible,
+  setCreateBookingModalVisible,
 }: Props) => {
   const theme = createMuiTheme({
     palette: {
@@ -193,7 +193,7 @@ export const ListingCreateBooking = ({
           canClick={!buttonDisabled}
           loading={false}
           actionText="Request To Book"
-          onClick={() => setModalVisible(true)}
+          onClick={() => setCreateBookingModalVisible(true)}
         />
         <p className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-emerald-600 bg-emerald-200">
           {buttonMessage}

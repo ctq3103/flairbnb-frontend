@@ -13,8 +13,8 @@ import {
 import {
   LoginViaEmail as LoginViaEmailData,
   LoginViaEmailVariables,
-} from "../../../__generated__/LoginViaEmail";
-import { ME_QUERY, LOGIN_VIA_EMAIL } from "../../../lib/graphql";
+} from "../../../graphql/__generated__/LoginViaEmail";
+import { ME_QUERY, LOGIN_VIA_EMAIL } from "../../../graphql";
 
 interface ILoginForm {
   email: string;

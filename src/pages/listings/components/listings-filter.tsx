@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import {
   ListingsFilter,
   ListingType,
-} from "../../../__generated__/globalTypes";
+} from "../../../graphql/__generated__/globalTypes";
 
 interface ListingsPriceFilterProps {
   filter: ListingsFilter;

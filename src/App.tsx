@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { useQuery, useReactiveVar } from "@apollo/client";
+import { useReactiveVar } from "@apollo/client";
 import { isLoggedInVar } from "./apollo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -16,23 +16,9 @@ import { CreateAccount } from "./pages/user/create-account";
 import { Login } from "./pages/user/login";
 import { Stripe } from "./pages/stripe";
 import { HostListing } from "./pages/host";
-import { USER_QUERY } from "./lib/graphql";
-import { User as UserData, UserVariables } from "./__generated__/User";
 import { useMe } from "./hooks/useMe";
 import { Loading } from "./lib/components/loading";
-
-const commonRoutes = [
-  { path: "/confirm", component: <ConfirmEmail /> },
-  { path: "/edit-profile", component: <EditProfile /> },
-  { path: "/profile/:id", component: <Profile /> },
-  { path: "/stripe", component: <Stripe /> },
-  { path: "/host", component: <HostListing /> },
-];
-
-const logoutRoutes = [
-  { path: "/create-account", component: <CreateAccount /> },
-  { path: "/login", component: <Login /> },
-];
+import { Chat } from "./pages/chat";
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY as string,
@@ -43,25 +29,27 @@ function App() {
 
   const { data: meData, loading } = useMe();
 
-  const { loading: userLoading } = useQuery<UserData, UserVariables>(
-    USER_QUERY,
-    {
-      variables: {
-        userId: Number(meData?.me.id),
-        bookingsPage: 1,
-        listingsPage: 1,
-        limit: 4,
-      },
-    },
-  );
-
-  if (loading || userLoading) {
+  if (loading) {
     return <Loading />;
   }
 
+  const commonRoutes = [
+    { path: "/confirm", component: <ConfirmEmail /> },
+    { path: "/edit-profile", component: <EditProfile /> },
+    { path: "/profile/:id", component: <Profile me={meData} /> },
+    { path: "/chat", component: <Chat me={meData} /> },
+    { path: "/stripe", component: <Stripe /> },
+    { path: "/host", component: <HostListing /> },
+  ];
+
+  const logoutRoutes = [
+    { path: "/create-account", component: <CreateAccount /> },
+    { path: "/login", component: <Login /> },
+  ];
+
   return (
     <Router>
-      <Header />
+      <Header me={meData} />
       <Switch>
         <Route exact path="/">
           <Home />

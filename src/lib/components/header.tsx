@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useReactiveVar } from "@apollo/client";
+import { useApolloClient, useReactiveVar } from "@apollo/client";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { isLoggedInVar } from "../../apollo";
-import { useMe } from "../../hooks/useMe";
 import { displayErrorMessage } from "./toast-message";
 import { Tooltip } from "@material-ui/core";
 import { LOCALSTORAGE_TOKEN } from "../../constants";
 import { authTokenVar } from "../../apollo";
+import { Me } from "../../graphql/__generated__/Me";
 
-export const Header = () => {
+interface Props {
+  me: Me | undefined;
+}
+
+export const Header = ({ me }: Props) => {
+  const client = useApolloClient();
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const [search, setSearch] = useState("");
 
   const history = useHistory();
   const location = useLocation();
-
-  const { data } = useMe();
 
   useEffect(() => {
     const { pathname } = location;
@@ -30,6 +33,7 @@ export const Header = () => {
       setSearch(pathnameSubStrings[2]);
       return;
     }
+    return () => {};
   }, [location]);
 
   const onSearch = (value: string) => {
@@ -114,9 +118,22 @@ export const Header = () => {
               </div>
 
               <div className="flex items-center">
+                <Tooltip title="Chat">
+                  <Link
+                    to={`/chat`}
+                    className="inline-block py-2 px-3 hover:bg-gray-200 rounded-full"
+                  >
+                    <div className="flex items-center relative cursor-pointer whitespace-nowrap space-x-2">
+                      <i className="far fa-comments fa-lg text-gray-500"></i>
+                    </div>
+                  </Link>
+                </Tooltip>
+              </div>
+
+              <div className="flex items-center">
                 <Tooltip title="Profile">
                   <Link
-                    to={`/profile/${data?.me.id}`}
+                    to={`/profile/${me?.me.id}`}
                     className="inline-block py-2 px-3 hover:bg-gray-200 rounded-full"
                   >
                     <div className="flex items-center relative cursor-pointer whitespace-nowrap space-x-2">
@@ -134,6 +151,7 @@ export const Header = () => {
                       localStorage.setItem(LOCALSTORAGE_TOKEN, "");
                       authTokenVar(null);
                       isLoggedInVar(false);
+                      client.cache.reset();
                       history.push("/");
                     }}
                   >

@@ -7,12 +7,12 @@ import { FormError } from "../../../lib/components/form-error";
 import {
   CreateAccount as CreateAccountData,
   CreateAccountVariables,
-} from "../../../__generated__/CreateAccount";
+} from "../../../graphql/__generated__/CreateAccount";
 import {
   displayErrorMessage,
   displaySuccessMessage,
 } from "../../../lib/components/toast-message";
-import { CREATE_ACCOUNT_MUTATION } from "../../../lib/graphql";
+import { CREATE_ACCOUNT_MUTATION } from "../../../graphql";
 
 interface ICreateAccountForm {
   name: string;
@@ -63,7 +63,6 @@ export const CreateAccountForm = () => {
 
   return (
     <div className="w-full max-w-screen-sm flex flex-col items-center">
-      {/* <img src={logo} className="w-52 mb-10" alt="Flairbnb" /> */}
       <h4 className="w-full font-medium text-center lg:text-3xl text-xl mb-5">
         Let's get started
       </h4>

@@ -4,7 +4,10 @@ import { useLocation, useParams } from "react-router";
 import { ErrorBanner } from "../../lib/components/error-banner";
 import { ListingsSkeleton } from "./components/listings-skeleton";
 import { useScrollToTop } from "../../hooks/useScrollToTop";
-import { ListingsFilter, ListingType } from "../../__generated__/globalTypes";
+import {
+  ListingsFilter,
+  ListingType,
+} from "../../graphql/__generated__/globalTypes";
 import {
   ListingsPriceFilterOptions,
   ListingsTypeFilterOptions,
@@ -14,8 +17,9 @@ import { ListingCard } from "../../lib/components/listing-card";
 import {
   Listings as ListingsData,
   ListingsVariables,
-} from "../../__generated__/Listings";
-import { LISTINGS } from "../../lib/graphql";
+} from "../../graphql/__generated__/Listings";
+import { LISTINGS } from "../../graphql";
+import { Helmet } from "react-helmet-async";
 
 interface MatchParams {
   location: string;
@@ -52,10 +56,12 @@ export const Listings = () => {
     },
   );
 
+  console.log(data);
+
   useEffect(() => {
     setPage(0);
     locationRef.current = location;
-  }, [location]);
+  }, [location, locationRef]);
 
   if (loading) {
     return <ListingsSkeleton />;
@@ -117,6 +123,9 @@ export const Listings = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Rooms | Flairbnb</title>
+      </Helmet>
       {listingsRegionElement}
       {listingsSectionElement}
     </>

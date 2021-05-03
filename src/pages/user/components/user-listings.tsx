@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../../../__generated__/User";
+import { User } from "../../../graphql/__generated__/User";
 import { ListingCard } from "../../../lib/components/listing-card";
 import { Pagination } from "../../../lib/components/pagination";
 

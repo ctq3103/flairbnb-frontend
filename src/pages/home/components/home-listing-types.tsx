@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router";
-import { ListingType } from "../../../__generated__/globalTypes";
+import { ListingType } from "../../../graphql/__generated__/globalTypes";
 import entirePlaceImage from "../../../images/entire-place.jpg";
 import hotelRoomImage from "../../../images/hotel-room.jpg";
 import privatePlaceImage from "../../../images/private-room.jpg";

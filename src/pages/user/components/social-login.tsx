@@ -1,14 +1,14 @@
-import { ApolloError, useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 import React, { useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { authTokenVar, isLoggedInVar } from "../../../apollo";
 import { LOCALSTORAGE_TOKEN } from "../../../constants";
 import { useScrollToTop } from "../../../hooks/useScrollToTop";
-import { GoogleAuthUrl as GoogleAuthUrlData } from "../../../__generated__/GoogleAuthUrl";
+import { GoogleAuthUrl as GoogleAuthUrlData } from "../../../graphql/__generated__/GoogleAuthUrl";
 import {
   LoginViaGoogleVariables,
   LoginViaGoogle as LoginViaGoogleData,
-} from "../../../__generated__/LoginViaGoogle";
+} from "../../../graphql/__generated__/LoginViaGoogle";
 import { FormError } from "../../../lib/components/form-error";
 import { Loading } from "../../../lib/components/loading";
 import {
@@ -16,21 +16,20 @@ import {
   displaySuccessMessage,
 } from "../../../lib/components/toast-message";
 import { Divider } from "@material-ui/core";
-import {
-  ME_QUERY,
-  LOGIN_VIA_GOOGLE,
-  GOOGLE_AUTH_URL,
-} from "../../../lib/graphql";
+import { ME_QUERY, LOGIN_VIA_GOOGLE, GOOGLE_AUTH_URL } from "../../../graphql";
 
 export const SocialLogin = () => {
   const client = useApolloClient();
   const history = useHistory();
 
+  useScrollToTop();
+
   const onCompleted = (data: LoginViaGoogleData) => {
     const {
       loginViaGoogle: { ok, user, token },
     } = data;
-    if (ok && token && user) {
+
+    if (ok && user && token) {
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
       authTokenVar(token);
       isLoggedInVar(true);
@@ -54,8 +53,8 @@ export const SocialLogin = () => {
     }
   };
 
-  const onError = (e: ApolloError) => {
-    displayErrorMessage("Unable to login via Google");
+  const onError = () => {
+    displayErrorMessage(`Unable to login via Google.`);
   };
 
   const [
@@ -73,13 +72,10 @@ export const SocialLogin = () => {
     },
   );
 
-  useScrollToTop();
-
   const loginViaGoogleRef = useRef(loginViaGoogle);
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get("code");
-
     if (code) {
       loginViaGoogleRef.current({
         variables: {
@@ -89,7 +85,7 @@ export const SocialLogin = () => {
     }
   }, []);
 
-  const handleAuthorize = async () => {
+  const handleGoogleAuthorize = async () => {
     try {
       const { data } = await client.query<GoogleAuthUrlData>({
         query: GOOGLE_AUTH_URL,
@@ -102,9 +98,9 @@ export const SocialLogin = () => {
     }
   };
 
-  if (loginViaGoogleLoading) {
-    return <Loading />;
-  }
+  // if (loginViaGoogleLoading || loginViaFacebookLoading) {
+  //   return <Loading />;
+  // }
 
   if (loginViaGoogleData && loginViaGoogleData.loginViaGoogle) {
     return <Redirect to={`/`} />;
@@ -118,13 +114,9 @@ export const SocialLogin = () => {
         <Divider className="w-5/12" />
       </div>
       <div className="flex flex-col w-full">
-        <button className="w-full border font-medium text-sm text-gray-700 mb-2 border-gray-500 text-center rounded-md lg:py-5 py-2">
-          <i className="fab fa-facebook  text-blue-800 mr-2"></i>
-          <span>Continue with Facebook</span>
-        </button>
         <button
           className="w-full border font-medium text-sm text-gray-700 mb-2 border-gray-500 text-center rounded-md lg:py-5 py-2"
-          onClick={handleAuthorize}
+          onClick={handleGoogleAuthorize}
         >
           {loginViaGoogleLoading ? (
             <span className="w-full text-white my-0 mx-auto block relative text-center">
@@ -138,7 +130,10 @@ export const SocialLogin = () => {
           )}
         </button>
         {loginViaGoogleError && (
-          <FormError errorMessage="Sorry! We weren't able to log you in at the moment. Please try again later!" />
+          <FormError errorMessage="Sorry! We weren't able to log you in. Please try again!" />
+        )}
+        {loginViaGoogleData && loginViaGoogleData.loginViaGoogle.error && (
+          <FormError errorMessage={loginViaGoogleData.loginViaGoogle.error} />
         )}
       </div>
     </>

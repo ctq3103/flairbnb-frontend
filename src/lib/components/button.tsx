@@ -2,7 +2,7 @@ import React from "react";
 
 interface IButtonProps {
   canClick: boolean;
-  loading: boolean;
+  loading?: boolean;
   actionText: string;
   styling?: string;
   onClick?: () => void;

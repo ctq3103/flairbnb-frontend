@@ -8,7 +8,7 @@ import {
 } from "../../lib/components/toast-message";
 import { Button } from "../../lib/components/button";
 import { FormError } from "../../lib/components/form-error";
-import { ListingType } from "../../__generated__/globalTypes";
+import { ListingType } from "../../graphql/__generated__/globalTypes";
 import { useMe } from "../../hooks/useMe";
 import { Helmet } from "react-helmet-async";
 import { Link, Redirect } from "react-router-dom";
@@ -16,8 +16,8 @@ import { useScrollToTop } from "../../hooks/useScrollToTop";
 import {
   HostListing as HostListingData,
   HostListingVariables,
-} from "../../__generated__/HostListing";
-import { HOST_LISTING, USER_QUERY } from "../../lib/graphql";
+} from "../../graphql/__generated__/HostListing";
+import { HOST_LISTING, USER_QUERY } from "../../graphql";
 
 interface HostListingForm {
   title: string;
@@ -99,6 +99,22 @@ export const HostListing = () => {
     HostListingData,
     HostListingVariables
   >(HOST_LISTING, {
+    onCompleted: (data) => {
+      if (data.hostListing.ok) {
+        displaySuccessMessage(
+          "Congratulations! You've successfully created your listing!",
+        );
+      } else if (data.hostListing.error) {
+        displayErrorMessage(
+          "Sorry! We weren't able to create your listing. Please try again! Make sure you enter valid address, city and country.",
+        );
+      }
+    },
+    onError: (e) => {
+      displayErrorMessage(
+        "Sorry! We weren't able to create your listing. Please try again! Make sure you enter valid address, city and country.",
+      );
+    },
     refetchQueries: [
       {
         query: USER_QUERY,
@@ -110,17 +126,6 @@ export const HostListing = () => {
         },
       },
     ],
-    onCompleted: (data) => {
-      displaySuccessMessage(
-        "Congratulations! You've successfully created your listing!",
-      );
-    },
-
-    onError: (e) => {
-      displayErrorMessage(
-        "Sorry! We weren't able to create your listing. Please try again! Make sure you enter valid address, city and country.",
-      );
-    },
   });
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -185,9 +190,9 @@ export const HostListing = () => {
 
   if (!userLoading && !userData?.me.hasWallet) {
     return (
-      <div className="h-screen flex flex-col justify-center lg:mx-44">
+      <div className="h-75vh flex flex-col justify-center lg:mx-44 text-center">
         <h2 className="font-semibold text-2xl mb-3">
-          You'll have to be signed in and connected with Stripe to host a
+          You'll have to be signed in AND connected with Stripe to host a
           listing!
         </h2>
         <p className="font-medium text-base mb-5">
