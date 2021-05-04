@@ -1,4 +1,4 @@
-import { useApolloClient, useMutation } from "@apollo/client";
+import { ApolloError, useApolloClient, useMutation } from "@apollo/client";
 import React, { useEffect, useRef } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { authTokenVar, isLoggedInVar } from "../../../apollo";
@@ -28,7 +28,6 @@ export const SocialLogin = () => {
     const {
       loginViaGoogle: { ok, user, token },
     } = data;
-
     if (ok && user && token) {
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
       authTokenVar(token);
