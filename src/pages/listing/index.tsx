@@ -111,7 +111,7 @@ export const Listing = () => {
   const listingCreateBooking = listing ? (
     <ListingCreateBooking
       isMyProfile={isMyProfile}
-      meId={meData?.me.id}
+      me={meData?.me}
       host={listing.host}
       price={listing.price}
       checkInDate={checkInDate}

@@ -8,10 +8,11 @@ import { Button } from "../../../lib/components/button";
 import { formatPrice } from "../../../lib/utils/formatPrice";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { displayErrorMessage } from "../../../lib/components/toast-message";
+import { Me } from "../../../graphql/__generated__/Me";
 
 interface Props {
   isMyProfile: boolean;
-  meId: number | undefined;
+  me: Me["me"] | undefined;
   host: ListingData["listing"]["listing"]["host"];
   bookingsIndex: ListingData["listing"]["listing"]["bookingsIndex"];
   price: number;
@@ -34,7 +35,7 @@ interface BookingsIndex {
 
 export const ListingCreateBooking = ({
   isMyProfile,
-  meId,
+  me,
   host,
   bookingsIndex,
   price,
@@ -133,14 +134,17 @@ export const ListingCreateBooking = ({
     setCheckOutDate(selectedCheckOutDate);
   };
 
-  const checkInInputDisabled = !meId || isMyProfile || !host.hasWallet;
+  const checkInInputDisabled =
+    !me || !me.hasWallet || isMyProfile || !host.hasWallet;
   const checkOutInputDisabled = checkInInputDisabled || !checkInDate;
   const buttonDisabled = checkOutInputDisabled || !checkInDate || !checkOutDate;
 
   let buttonMessage = "You won't be charged yet";
 
-  if (!meId) {
+  if (!me) {
     buttonMessage = "You have to be signed in to book a room!";
+  } else if (!me.hasWallet) {
+    buttonMessage = "You have to connect with Stripe to book a room!";
   } else if (isMyProfile) {
     buttonMessage = "You cannot book your own room!";
   } else if (!host.hasWallet) {
