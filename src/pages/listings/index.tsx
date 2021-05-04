@@ -56,8 +56,6 @@ export const Listings = () => {
     },
   );
 
-  console.log(data);
-
   useEffect(() => {
     setPage(0);
     locationRef.current = location;
