@@ -38,7 +38,8 @@
     "web-vitals": "^1.0.1",
   },
   "scripts": {
-    "tailwind:build": "set NODE_ENV=production&&tailwind build ./src/styles/tailwind.css -o ./src/styles/styles.css",
+    "tailwind:prodbuild":"set NODE_ENV=production&&yarn run tailwind:build",
+    "tailwind:build": "tailwind build ./src/styles/tailwind.css -o ./src/styles/styles.css",
     "start": "react-scripts start",
     "apollo:codegen": "rimraf src/graphql/__generated__ && apollo client:codegen src/graphql/__generated__ --target=typescript --outputFlat",
     "build": "CI=false react-scripts build",
