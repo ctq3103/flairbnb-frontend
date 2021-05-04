@@ -36,11 +36,9 @@
     "tailwindcss": "^2.0.3",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1",
-    "cross-env": "^7.0.3"
   },
   "scripts": {
-    "tailwind:prodbuild": "cross-env NODE_ENV=production yarn run tailwind:build",
-    "tailwind:build": "tailwind build ./src/styles/tailwind.css -o ./src/styles/styles.css",
+    "tailwind:build": "cross-env NODE_ENV=production tailwind build ./src/styles/tailwind.css -o ./src/styles/styles.css",
     "start": "react-scripts start",
     "apollo:codegen": "rimraf src/graphql/__generated__ && apollo client:codegen src/graphql/__generated__ --target=typescript --outputFlat",
     "build": "CI=false react-scripts build",
@@ -69,6 +67,7 @@
   "devDependencies": {
     "@types/react-paginate": "^6.2.1",
     "@types/react-router-dom": "^5.1.7",
-    "@types/react-slick": "^0.23.4"
+    "@types/react-slick": "^0.23.4",
+    "cross-env": "^7.0.3"
   }
 }
