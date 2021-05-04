@@ -43,7 +43,7 @@
     "start": "react-scripts start",
     "apollo:codegen": "rimraf src/graphql/__generated__ && apollo client:codegen src/graphql/__generated__ --target=typescript --outputFlat",
     "build": "CI=false react-scripts build",
-    "prebuild": "yarn run tailwind:build",
+    "prebuild": "yarn run tailwind:prodbuild",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
