@@ -45,9 +45,6 @@ export const ListingCard = ({ listing, checkIn, checkOut }: Props) => {
       <Link to={`/listing/${id}`}>
         <div className="px-4 pb-4 pt-2">
           <div className=" grid grid-cols-2 truncate">
-            {/* <span className="uppercase font-medium text-xs border border-black text-black rounded py-px px-2 mr-2">
-            Superhost
-          </span> */}
             <span className="text-xs text-gray-600">
               {admin}, {country}
             </span>
@@ -61,7 +58,6 @@ export const ListingCard = ({ listing, checkIn, checkOut }: Props) => {
               / night
             </p>
             <span className="text-sm flex items-center justify-self-end">
-              {/* <i className="fas fa-star text-xs mr-1 text-rose-500"></i> */}
               <i className="fas fa-users text-xs mr-1 text-rose-500"></i>
               {numOfGuests} guests
             </span>

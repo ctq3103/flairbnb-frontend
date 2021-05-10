@@ -307,13 +307,13 @@ export const HostListing = () => {
             ref={register({
               required: "Title is required",
               minLength: 10,
-              maxLength: 50,
+              maxLength: 150,
             })}
             required
             name="title"
             type="text"
             minLength={10}
-            maxLength={50}
+            maxLength={150}
             placeholder="Title"
             autoComplete="off"
             className="w-full"
